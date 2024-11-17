@@ -1,13 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>NoteApp</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="mainContainer">
+      <div class="leftContainer">
+        <section class="addSection">
+          <form>
+            <label for="noteInput">
+              <p>Input your Note here</p>
+              <input
+                type="text"
+                placeholder="Your Note"
+                required
+                id="noteInput"
+              />
+              <input
+                type="textarea"
+                placeholder="Describtion"
+                required
+                id="noteDescription"
+              />
+              <button type="submit" id="noteSubmit">submit</button>
+            </label>
+          </form>
+        </section>
+      </div>
+      <div id="rightContainer"></div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
