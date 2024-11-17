@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --textColor: #000;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  box-sizing: border-box;
+  color: var(--textColor);
+}
+
+#mainContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 2.5rem;
+}
+
+.leftContainer {
+  margin: auto 0;
+}
+
+.addSection {
+  form {
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      textarea {
+        width: 20rem;
+        height: 10rem;
+        resize: none;
+      }
+    }
+  }
+}
+
+#rightContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  .note-block {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+    border: 1px #1a1a1a solid;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem 1rem 1rem;
+    .noteDiv1 {
+      display: flex;
+      flex-direction: column;
+      padding: 0rem 0.5rem 0rem 0.5rem;
+      width: 40rem;
+      p {
+        padding: 0.5rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+      }
+      div {
+        border: 1px #1a1a1a solid;
+        border-radius: 1rem;
+        padding: 1rem;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+      }
+    }
+    .noteDiv2 {
+      img {
+        cursor: pointer;
+      }
+    }
+  }
+}
