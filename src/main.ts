@@ -1,6 +1,7 @@
 import "./style.css";
 
-const notes: { title: string; description: string }[] = [];
+let notes: { id: number; title: string; description: string }[] = [];
+let nextId = 1;
 let currentPage = 1;
 const pageSize = 5;
 
@@ -40,10 +41,7 @@ const renderNotes = () => {
     const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
     if (noteImage) {
       noteImage.addEventListener("click", () => {
-        const index = notes.indexOf(note);
-        if (index > -1) {
-          notes.splice(index, 1);
-        }
+        notes = notes.filter(n => n.id !== note.id);
         renderNotes();
       });
     }
@@ -108,14 +106,17 @@ if (noteSubmit && noteInput && noteDescription) {
     event.preventDefault();
 
     if (noteInput.value.length > 0 && noteDescription.value.length > 0) {
-      notes.push({
+      const newNote = {
+        id: nextId++,
         title: noteInput.value,
         description: noteDescription.value,
-      });
+      };
+
+      notes.push(newNote);
+      renderNotes();
+
       noteInput.value = "";
       noteDescription.value = "";
-      noteInput.focus();
-      renderNotes();
     } else {
       console.log("Write your note firstly");
     }
