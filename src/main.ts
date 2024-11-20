@@ -1,12 +1,14 @@
 import "./style.css";
+import { Note } from "../types";
 
 let notes: { id: number; title: string; description: string }[] = [];
 let nextId = 1;
 let currentPage = 1;
 const pageSize = 5;
+const rightContainer =
+  document.querySelector<HTMLDivElement>("#rightContainer");
 
 const renderNotes = () => {
-  const rightContainer = document.querySelector<HTMLElement>("#rightContainer");
   if (!rightContainer) {
     console.error("rightContainer not found in the DOM!");
     return;
@@ -23,19 +25,19 @@ const renderNotes = () => {
     block.classList.add("note-block");
 
     block.innerHTML = `
-      <div class="noteDiv1">
-        <p>${note.title}</p>
-        <div>${note.description}</div>
-      </div>
-      <div class="noteDiv2">
-        <img 
-          width="20px" 
-          height="20px" 
-          src="https://img.icons8.com/ios-glyphs/30/multiply.png" 
-          alt="multiply"
-          class="noteImage"
-        />
-      </div>
+    <div class="noteDiv1">
+    <p>${note.title}</p>
+    <div>${note.description}</div>
+    </div>
+    <div class="noteDiv2">
+    <img 
+    width="20px" 
+    height="20px" 
+    src="https://img.icons8.com/ios-glyphs/30/multiply.png" 
+    alt="multiply"
+    class="noteImage"
+    />
+    </div>
     `;
 
     const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
@@ -126,3 +128,47 @@ if (noteSubmit && noteInput && noteDescription) {
 } else {
   console.error("Required elements are missing in the DOM!");
 }
+
+const fetchData = async () => {
+  const response = await fetch("http://localhost:3000/api/data");
+  return (await response.json()) as Note[];
+};
+
+const newData = await fetchData();
+
+const mappedData = () => {
+  newData.map(note => {
+    const block = document.createElement("div");
+    block.classList.add("note-block");
+
+    block.innerHTML = `
+      <div class="noteDiv1">
+      <p>${note.content}</p>
+      <div>${note.description}</div>
+      </div>
+      <div class="noteDiv2">
+      <img 
+      width="20px" 
+      height="20px" 
+      src="https://img.icons8.com/ios-glyphs/30/multiply.png" 
+      alt="multiply"
+      class="noteImage"
+      />
+      </div>
+      `;
+
+    const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
+    if (noteImage) {
+      noteImage.addEventListener("click", () => {
+        notes = notes.filter(n => n.id !== note.id);
+        renderNotes();
+      });
+    }
+
+    rightContainer?.appendChild(block);
+
+    renderPagination();
+  });
+};
+
+mappedData();
