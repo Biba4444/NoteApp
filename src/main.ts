@@ -5,11 +5,11 @@ import { v1 as uuid } from "uuid";
 // GET data function
 const fetchData = async (): Promise<Note[]> => {
   const response = await fetch("http://localhost:3000/api/data");
-  return (await response.json()) as Note[];
+  return await response.json();
 };
 
 // POST data function
-const addData = async (postData: Note): Promise<void> => {
+const addData = async (postData: Note) => {
   try {
     const response = await fetch("http://localhost:3000/api/data-add", {
       method: "POST",
@@ -33,7 +33,7 @@ const addData = async (postData: Note): Promise<void> => {
 };
 
 // Wrap all functions into one asyn
-const init = async () => {
+(async () => {
   let currentPage = 1;
   let newData = await fetchData();
   let dataToAdd;
@@ -170,6 +170,4 @@ const init = async () => {
   }
 
   renderNotes();
-};
-
-init();
+})();

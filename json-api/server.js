@@ -49,6 +49,20 @@ app.post("/api/data-add", (req, res) => {
   res.status(201).json(newData);
 });
 
+app.delete("/api/data-delete", (req, res) => {
+  const { id } = req.body;
+  const data = readJSONFile();
+
+  const initialLength = data.length;
+  data = data.filter(item => item.id !== id);
+
+  if (data.length === initialLength) {
+    return res.status(404).json({ message: "Object not found" });
+  }
+  writeJSONFile(data);
+  res.status(200).json({ message: "Object deleted", id });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
