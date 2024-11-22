@@ -1,13 +1,12 @@
 [
   {
-    "id": 1,
-    "content": "blahblahblha",
+    "id": "1",
+    "title": "blahblahblha",
     "description": "NO"
   },
-
   {
-    "id": 2,
-    "content": "blahblahblha",
+    "id": "2",
+    "title": "blahblahblha",
     "description": "YES"
   }
 ]

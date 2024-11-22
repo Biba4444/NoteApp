@@ -9,5 +9,6 @@ export default defineConfig({
   server: {
     open: true,
     cors: true,
+    port: 5173,
   },
 });

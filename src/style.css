@@ -90,6 +90,7 @@
     .noteDiv2 {
       img {
         cursor: pointer;
+        user-select: none;
       }
     }
   }
