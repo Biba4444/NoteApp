@@ -12,7 +12,7 @@ const app = express();
 app.use(
   cors({
     origin: "http://localhost:5173", // Allow requests from this origin
-    methods: ["GET", "POST"], // Allowed HTTP methods
+    methods: ["GET", "POST", "DELETE"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type"], // Allowed headers
   })
 );
@@ -51,7 +51,18 @@ app.post("/api/data-add", (req, res) => {
 
 app.delete("/api/data-delete", (req, res) => {
   const { id } = req.body;
-  const data = readJSONFile();
+
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
+  }
+
+  let data;
+  try {
+    data = readJSONFile();
+  } catch (err) {
+    console.error("Error reading data from file:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 
   const initialLength = data.length;
   data = data.filter(item => item.id !== id);
@@ -59,7 +70,14 @@ app.delete("/api/data-delete", (req, res) => {
   if (data.length === initialLength) {
     return res.status(404).json({ message: "Object not found" });
   }
-  writeJSONFile(data);
+
+  try {
+    writeJSONFile(data);
+  } catch (err) {
+    console.error("Error writing data to file:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
   res.status(200).json({ message: "Object deleted", id });
 });
 

@@ -32,6 +32,28 @@ const addData = async (postData: Note) => {
   }
 };
 
+const delData = async (id: string) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/data-delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (!response.ok) {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return;
+    }
+
+    const responseData = await response.json();
+    console.log("Successfully deleted:", responseData);
+  } catch (error) {
+    console.error("An error occurred while deleting data", error);
+  }
+};
+
 // Wrap all functions into one asyn
 (async () => {
   let currentPage = 1;
@@ -81,7 +103,9 @@ const addData = async (postData: Note) => {
 
       const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
       if (noteImage) {
-        noteImage.addEventListener("click", () => {
+        noteImage.addEventListener("click", async () => {
+          const noteId = note.id;
+          await delData(noteId);
           newData = newData.filter(n => n.id !== note.id);
           renderNotes();
         });
