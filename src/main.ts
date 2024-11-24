@@ -2,6 +2,9 @@ import "./style.css";
 import { Note } from "../types";
 import { v1 as uuid } from "uuid";
 
+const rightContainer =
+  document.querySelector<HTMLDivElement>("#rightContainer");
+
 // GET data function
 const fetchData = async (): Promise<Note[]> => {
   const response = await fetch("http://localhost:3000/api/data");
@@ -54,6 +57,25 @@ const delData = async (id: string) => {
   }
 };
 
+const dragStartFunc = () => {
+  rightContainer?.addEventListener("dragstart", (event: Event) => {
+    const dragEvent = event as DragEvent;
+
+    const target = event.target as HTMLElement;
+    if (target.classList.contains("note-block")) {
+      const noteId = target.getAttribute("data-id") || "";
+      dragEvent.dataTransfer?.setData("text/plain", noteId);
+      console.log("Started dragging note with ID:", noteId);
+    }
+  });
+};
+
+const initDrag = () => {
+  rightContainer?.addEventListener("dragover", (event: Event) => {
+    event.preventDefault();
+  });
+};
+
 // Wrap all functions into one asyn
 (async () => {
   let currentPage = 1;
@@ -61,8 +83,6 @@ const delData = async (id: string) => {
   let dataToAdd;
 
   const pageSize = 5;
-  const rightContainer =
-    document.querySelector<HTMLDivElement>("#rightContainer");
 
   if (!newData) {
     console.log("Data is not found");
@@ -83,7 +103,11 @@ const delData = async (id: string) => {
 
     notesToDisplay.map(note => {
       const block = document.createElement("div");
+      const uniqueId = uuid();
       block.classList.add("note-block");
+      block.setAttribute("id", uniqueId);
+      block.setAttribute("data-id", note.id);
+      block.setAttribute("draggable", "true");
 
       block.innerHTML = `
         <div class="noteDiv1">
@@ -194,4 +218,6 @@ const delData = async (id: string) => {
   }
 
   renderNotes();
+  dragStartFunc();
+  initDrag();
 })();
