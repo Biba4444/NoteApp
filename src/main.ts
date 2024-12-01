@@ -57,25 +57,6 @@ const delData = async (id: string) => {
   }
 };
 
-const dragStartFunc = () => {
-  rightContainer?.addEventListener("dragstart", (event: Event) => {
-    const dragEvent = event as DragEvent;
-
-    const target = event.target as HTMLElement;
-    if (target.classList.contains("note-block")) {
-      const noteId = target.getAttribute("data-id") || "";
-      dragEvent.dataTransfer?.setData("text/plain", noteId);
-      console.log("Started dragging note with ID:", noteId);
-    }
-  });
-};
-
-const initDrag = () => {
-  rightContainer?.addEventListener("dragover", (event: Event) => {
-    event.preventDefault();
-  });
-};
-
 // Wrap all functions into one asyn
 (async () => {
   let currentPage = 1;
@@ -107,14 +88,15 @@ const initDrag = () => {
       block.classList.add("note-block");
       block.setAttribute("id", uniqueId);
       block.setAttribute("data-id", note.id);
-      block.setAttribute("draggable", "true");
 
       block.innerHTML = `
         <div class="noteDiv1">
-          <p>${note.title}</p>
-          <div>${note.description}</div>
+          <p class="pMainText">${note.title}</p>
+          <div class="divDescrText">${note.description}</div>
         </div>
         <div class="noteDiv2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"
+        class="redactImage"/></svg>
           <img 
             width="20px" 
             height="20px" 
@@ -123,6 +105,17 @@ const initDrag = () => {
             class="noteImage"
           />
         </div>
+        <dialog id="editDialog">
+    <form method="dialog">
+        <label for="editInput">Изменить текст:</label>
+        <input type="text" id="editInput" />
+        <input type="text" id="editDescription" />
+        <menu>
+            <button value="cancel">Отмена</button>
+            <button value="confirm">Сохранить</button>
+        </menu>
+    </form>
+</dialog>
       `;
 
       const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
@@ -132,6 +125,62 @@ const initDrag = () => {
           await delData(noteId);
           newData = newData.filter(n => n.id !== note.id);
           renderNotes();
+        });
+      }
+      const redactImage =
+        block.querySelector<HTMLOrSVGImageElement>(".redactImage");
+
+      if (redactImage) {
+        redactImage.addEventListener("click", () => {
+          const noteId = note.id;
+
+          // Открытие диалога
+          const dialog = block.querySelector<HTMLDialogElement>("#editDialog");
+          const input = block.querySelector<HTMLInputElement>("#editInput");
+          const descriptionInput =
+            block.querySelector<HTMLInputElement>("#editDescription");
+
+          if (!dialog || !input || !descriptionInput) {
+            console.error("Dialog or input elements not found.");
+            return;
+          }
+
+          // Установка текущих значений
+          input.value = note.title;
+          descriptionInput.value = note.description;
+
+          // Открытие модального окна
+          dialog.showModal();
+
+          // Обработка события закрытия
+          dialog.addEventListener(
+            "close",
+            async () => {
+              if (dialog.returnValue === "confirm") {
+                const updatedTitle = input.value.trim();
+                const updatedDescription = descriptionInput.value.trim();
+
+                // Обновление текста заметки
+                if (updatedTitle && updatedDescription) {
+                  note.title = updatedTitle;
+                  note.description = updatedDescription;
+
+                  // Обновление отображения
+                  const pMainText =
+                    block.querySelector<HTMLParagraphElement>(".pMainText");
+                  const divDescrText =
+                    block.querySelector<HTMLDivElement>(".divDescrText");
+
+                  if (pMainText) pMainText.textContent = updatedTitle;
+                  if (divDescrText)
+                    divDescrText.textContent = updatedDescription;
+                } else {
+                  console.log("Both fields must be filled.");
+                }
+              }
+            },
+            { once: true } // Убедитесь, что обработчик вызовется только один раз
+          );
         });
       }
 
@@ -218,6 +267,4 @@ const initDrag = () => {
   }
 
   renderNotes();
-  dragStartFunc();
-  initDrag();
 })();

@@ -88,6 +88,14 @@
       }
     }
     .noteDiv2 {
+      display: flex;
+      gap: 0.4rem;
+      svg {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+        user-select: none;
+      }
       img {
         cursor: pointer;
         user-select: none;
