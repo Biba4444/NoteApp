@@ -203,7 +203,7 @@ const delData = async (id: string) => {
                 }
               }
             },
-            { once: true } // Убедитесь, что обработчик вызовется только один раз
+            { once: true }
           );
         });
       }
