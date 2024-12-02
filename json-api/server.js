@@ -36,6 +36,15 @@ const writeJSONFile = data => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
 };
 
+const updateObjectInArray = (array, id, updatedFields) => {
+  return array.map(obj => {
+    if (obj.id === id) {
+      return { ...obj, ...updatedFields }; // Создаем новый объект с обновленными полями
+    }
+    return obj; // Возвращаем объект без изменений
+  });
+};
+
 app.get("/api/data", (req, res) => {
   const data = readJSONFile();
   res.json(data);
@@ -47,6 +56,23 @@ app.post("/api/data-add", (req, res) => {
   data.push(newData);
   writeJSONFile(data);
   res.status(201).json(newData);
+});
+
+app.post("/api/data-change", (req, res) => {
+  const changeData = req.body; // Объект, содержащий данные для изменения
+  const { id, ...updatedFields } = changeData; // Извлекаем id и обновляемые поля
+
+  if (!id) {
+    return res.status(400).json({ error: "ID is required" });
+  }
+
+  const data = readJSONFile(); // Читаем текущие данные из файла
+
+  // Обновляем объект с указанным ID
+  const newData = updateObjectInArray(data, id, updatedFields);
+
+  writeJSONFile(newData); // Сохраняем обновлённые данные в файл
+  res.status(200).json(newData); // Возвращаем обновлённые данные клиенту
 });
 
 app.delete("/api/data-delete", (req, res) => {

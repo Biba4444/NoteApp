@@ -35,6 +35,24 @@ const addData = async (postData: Note) => {
   }
 };
 
+const changeData = async (dataToChange: Note) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/data-change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToChange),
+    });
+    if (!response.ok) {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return;
+    }
+  } catch (error) {
+    console.error("An error occurred while posting data", error);
+  }
+};
+
 const delData = async (id: string) => {
   try {
     const response = await fetch("http://localhost:3000/api/data-delete", {
@@ -164,6 +182,12 @@ const delData = async (id: string) => {
                 if (updatedTitle && updatedDescription) {
                   note.title = updatedTitle;
                   note.description = updatedDescription;
+
+                  await changeData({
+                    id: noteId,
+                    title: updatedTitle,
+                    description: updatedDescription,
+                  });
 
                   // Обновление отображения
                   const pMainText =
