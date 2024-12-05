@@ -125,12 +125,12 @@ const delData = async (id: string) => {
         </div>
         <dialog id="editDialog">
     <form method="dialog">
-        <label for="editInput">Изменить текст:</label>
+        <label for="editInput">Edit note:</label>
         <input type="text" id="editInput" />
         <input type="text" id="editDescription" />
         <menu>
-            <button value="cancel">Отмена</button>
-            <button value="confirm">Сохранить</button>
+            <button value="cancel">Decline</button>
+            <button value="confirm">Save</button>
         </menu>
     </form>
 </dialog>
@@ -152,7 +152,6 @@ const delData = async (id: string) => {
         redactImage.addEventListener("click", () => {
           const noteId = note.id;
 
-          // Открытие диалога
           const dialog = block.querySelector<HTMLDialogElement>("#editDialog");
           const input = block.querySelector<HTMLInputElement>("#editInput");
           const descriptionInput =
@@ -163,14 +162,11 @@ const delData = async (id: string) => {
             return;
           }
 
-          // Установка текущих значений
           input.value = note.title;
           descriptionInput.value = note.description;
 
-          // Открытие модального окна
           dialog.showModal();
 
-          // Обработка события закрытия
           dialog.addEventListener(
             "close",
             async () => {
@@ -178,7 +174,6 @@ const delData = async (id: string) => {
                 const updatedTitle = input.value.trim();
                 const updatedDescription = descriptionInput.value.trim();
 
-                // Обновление текста заметки
                 if (updatedTitle && updatedDescription) {
                   note.title = updatedTitle;
                   note.description = updatedDescription;
@@ -189,7 +184,6 @@ const delData = async (id: string) => {
                     description: updatedDescription,
                   });
 
-                  // Обновление отображения
                   const pMainText =
                     block.querySelector<HTMLParagraphElement>(".pMainText");
                   const divDescrText =
