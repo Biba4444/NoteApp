@@ -124,14 +124,20 @@ const delData = async (id: string) => {
           />
         </div>
         <dialog id="editDialog">
+        <div id="dialogContainer">
     <form method="dialog">
+        <div id="dialogGap">
         <label for="editInput">Edit note:</label>
         <input type="text" id="editInput" />
         <input type="text" id="editDescription" />
+        <div>
+        <div id="dialogButtons">
         <menu>
-            <button value="cancel">Decline</button>
-            <button value="confirm">Save</button>
+        <button value="cancel">Decline</button>
+        <button value="confirm">Save</button>
         </menu>
+        <div>
+        <div>
     </form>
 </dialog>
       `;
