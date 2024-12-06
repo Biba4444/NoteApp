@@ -81,7 +81,7 @@ const delData = async (id: string) => {
   let newData = await fetchData();
   let dataToAdd;
 
-  const pageSize = 5;
+  const pageSize = 3;
 
   if (!newData) {
     console.log("Data is not found");
