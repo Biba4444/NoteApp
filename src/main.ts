@@ -75,6 +75,9 @@ const delData = async (id: string) => {
   }
 };
 
+let notesToDisplay: Note[];
+let startIndex: number;
+
 // Wrap all functions into one asyn
 (async () => {
   let currentPage = 1;
@@ -96,9 +99,9 @@ const delData = async (id: string) => {
 
     rightContainer.innerHTML = "";
 
-    const startIndex = (currentPage - 1) * pageSize;
+    startIndex = (currentPage - 1) * pageSize;
     const endIndex = Math.min(startIndex + pageSize, newData.length);
-    const notesToDisplay = newData.slice(startIndex, endIndex);
+    notesToDisplay = newData.slice(startIndex, endIndex);
 
     notesToDisplay.map(note => {
       const block = document.createElement("div");
@@ -223,7 +226,14 @@ const delData = async (id: string) => {
     }
 
     paginationContainer.innerHTML = "";
-    const totalPages = Math.ceil(newData.length / pageSize);
+
+    const totalPages = Math.max(1, Math.ceil(newData.length / pageSize));
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+      renderNotes();
+      return;
+    }
 
     const prevButton = document.createElement("button");
     prevButton.textContent = "Previous";
@@ -231,14 +241,7 @@ const delData = async (id: string) => {
     prevButton.addEventListener("click", () => {
       currentPage = Math.max(1, currentPage - 1);
       renderNotes();
-    });
-
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "Next";
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener("click", () => {
-      currentPage = Math.min(totalPages, currentPage + 1);
-      renderNotes();
+      renderPagination();
     });
 
     paginationContainer.appendChild(prevButton);
@@ -247,13 +250,24 @@ const delData = async (id: string) => {
       const pageButton = document.createElement("button");
       pageButton.textContent = i.toString();
       pageButton.disabled = i === currentPage;
+
       pageButton.addEventListener("click", () => {
         currentPage = i;
         renderNotes();
+        renderPagination();
       });
 
       paginationContainer.appendChild(pageButton);
     }
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener("click", () => {
+      currentPage = Math.min(totalPages, currentPage + 1);
+      renderNotes();
+      renderPagination();
+    });
 
     paginationContainer.appendChild(nextButton);
   };
