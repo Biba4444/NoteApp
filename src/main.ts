@@ -75,13 +75,16 @@ const delData = async (id: string) => {
   }
 };
 
+let notesToDisplay: Note[];
+let startIndex: number;
+
 // Wrap all functions into one asyn
 (async () => {
   let currentPage = 1;
   let newData = await fetchData();
   let dataToAdd;
 
-  const pageSize = 5;
+  const pageSize = 3;
 
   if (!newData) {
     console.log("Data is not found");
@@ -96,9 +99,9 @@ const delData = async (id: string) => {
 
     rightContainer.innerHTML = "";
 
-    const startIndex = (currentPage - 1) * pageSize;
+    startIndex = (currentPage - 1) * pageSize;
     const endIndex = Math.min(startIndex + pageSize, newData.length);
-    const notesToDisplay = newData.slice(startIndex, endIndex);
+    notesToDisplay = newData.slice(startIndex, endIndex);
 
     notesToDisplay.map(note => {
       const block = document.createElement("div");
@@ -124,14 +127,20 @@ const delData = async (id: string) => {
           />
         </div>
         <dialog id="editDialog">
+        <div id="dialogContainer">
     <form method="dialog">
-        <label for="editInput">Изменить текст:</label>
+        <div id="dialogGap">
+        <label for="editInput">Edit note:</label>
         <input type="text" id="editInput" />
         <input type="text" id="editDescription" />
+        <div>
+        <div id="dialogButtons">
         <menu>
-            <button value="cancel">Отмена</button>
-            <button value="confirm">Сохранить</button>
+        <button value="cancel">Decline</button>
+        <button value="confirm">Save</button>
         </menu>
+        <div>
+        <div>
     </form>
 </dialog>
       `;
@@ -152,7 +161,6 @@ const delData = async (id: string) => {
         redactImage.addEventListener("click", () => {
           const noteId = note.id;
 
-          // Открытие диалога
           const dialog = block.querySelector<HTMLDialogElement>("#editDialog");
           const input = block.querySelector<HTMLInputElement>("#editInput");
           const descriptionInput =
@@ -163,14 +171,11 @@ const delData = async (id: string) => {
             return;
           }
 
-          // Установка текущих значений
           input.value = note.title;
           descriptionInput.value = note.description;
 
-          // Открытие модального окна
           dialog.showModal();
 
-          // Обработка события закрытия
           dialog.addEventListener(
             "close",
             async () => {
@@ -178,7 +183,6 @@ const delData = async (id: string) => {
                 const updatedTitle = input.value.trim();
                 const updatedDescription = descriptionInput.value.trim();
 
-                // Обновление текста заметки
                 if (updatedTitle && updatedDescription) {
                   note.title = updatedTitle;
                   note.description = updatedDescription;
@@ -189,7 +193,6 @@ const delData = async (id: string) => {
                     description: updatedDescription,
                   });
 
-                  // Обновление отображения
                   const pMainText =
                     block.querySelector<HTMLParagraphElement>(".pMainText");
                   const divDescrText =
@@ -223,7 +226,18 @@ const delData = async (id: string) => {
     }
 
     paginationContainer.innerHTML = "";
-    const totalPages = Math.ceil(newData.length / pageSize);
+
+    const totalPages = Math.max(1, Math.ceil(newData.length / pageSize));
+
+    if (newData.length === 0) {
+      return; // Ничего не рендерим, если нет данных
+    }
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+      renderNotes();
+      return;
+    }
 
     const prevButton = document.createElement("button");
     prevButton.textContent = "Previous";
@@ -231,14 +245,7 @@ const delData = async (id: string) => {
     prevButton.addEventListener("click", () => {
       currentPage = Math.max(1, currentPage - 1);
       renderNotes();
-    });
-
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "Next";
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener("click", () => {
-      currentPage = Math.min(totalPages, currentPage + 1);
-      renderNotes();
+      renderPagination();
     });
 
     paginationContainer.appendChild(prevButton);
@@ -247,13 +254,24 @@ const delData = async (id: string) => {
       const pageButton = document.createElement("button");
       pageButton.textContent = i.toString();
       pageButton.disabled = i === currentPage;
+
       pageButton.addEventListener("click", () => {
         currentPage = i;
         renderNotes();
+        renderPagination();
       });
 
       paginationContainer.appendChild(pageButton);
     }
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener("click", () => {
+      currentPage = Math.min(totalPages, currentPage + 1);
+      renderNotes();
+      renderPagination();
+    });
 
     paginationContainer.appendChild(nextButton);
   };

@@ -1,105 +1,268 @@
-@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Montserrat:wght@300;400;600;800&display=swap");
 
 :root {
-  --textColor: #000;
+  --primaryColor: #6c63ff;
+  --secondaryColor: #ff6584;
+  --backgroundColor: #f5f7fa;
+  --cardBackground: #ffffff;
+  --borderColor: rgba(0, 0, 0, 0.1);
+  --textColor: #333333;
+  --headingColor: #2a2a72;
+  --shadowColor: rgba(0, 0, 0, 0.1);
+  --shadowHover: rgba(0, 0, 0, 0.2);
 }
 
 * {
-  padding: 0;
   margin: 0;
-  font-family: "Montserrat", sans-serif;
+  padding: 0;
   box-sizing: border-box;
-  color: var(--textColor);
+  font-family: "Montserrat", sans-serif;
   scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
+body {
+  background: var(--backgroundColor);
+  color: var(--textColor);
+  line-height: 1.6;
+}
+
+/* Main Container */
 #mainContainer {
-  width: 100vw;
-  height: 100vh;
   display: flex;
   justify-content: space-between;
-  align-items: start;
-  padding: 2.5rem;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 3rem;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
+/* Left Container */
 .leftContainer {
-  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 35%;
+  height: 100%;
 }
 
-.addSection {
-  form {
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      textarea {
-        width: 20rem;
-        height: 10rem;
-        resize: none;
-      }
-    }
-  }
+.miniLeftContainer h1 {
+  font-size: 4.5rem;
+  color: var(--headingColor);
+  font-family: "Lilita One", cursive;
+  text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+  user-select: none;
 }
 
+.addSection form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--cardBackground);
+  border-radius: 1rem;
+  box-shadow: 0px 8px 12px var(--shadowColor);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.addSection form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 12px 20px var(--shadowHover);
+}
+
+.addSection label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primaryColor);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#noteInput {
+  border: 1px solid var(--borderColor);
+  border-radius: 0.2rem;
+  background: var(--backgroundColor);
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.2rem;
+}
+
+.addSection textarea {
+  width: 100%;
+  height: 8rem;
+  border: 1px solid var(--borderColor);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 1rem;
+  background: var(--backgroundColor);
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  resize: none;
+}
+
+.addSection textarea:focus {
+  outline: none;
+  border-color: var(--primaryColor);
+  box-shadow: 0px 4px 8px var(--shadowHover);
+}
+
+.addSection button {
+  padding: 0.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--primaryColor);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.addSection button:hover {
+  background: var(--secondaryColor);
+}
+
+/* Notes List */
 .notesList {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
-  #pagination {
-    display: flex;
-    gap: 0.3rem;
-    button {
-      padding: 0.3rem;
-    }
-  }
 }
 
+.notesList #pagination {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.notesList #pagination button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--primaryColor);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.notesList #pagination button:hover {
+  background: var(--secondaryColor);
+  transform: scale(1.05);
+}
+
+/* Right Container */
 #rightContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  .note-block {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
-    border: 1px #1a1a1a solid;
-    border-radius: 1rem;
-    padding: 0.5rem 1rem 1rem 1rem;
-    .noteDiv1 {
-      display: flex;
-      flex-direction: column;
-      padding: 0rem 0.5rem 0rem 0.5rem;
-      width: 40rem;
-      height: 8.2rem;
-      p {
-        padding: 0.5rem;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-      }
-      div {
-        border: 1px #1a1a1a solid;
-        border-radius: 1rem;
-        padding: 1rem;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        height: 5rem;
-        overflow-y: scroll;
-      }
-    }
-    .noteDiv2 {
-      display: flex;
-      gap: 0.4rem;
-      svg {
-        width: 17px;
-        height: 17px;
-        cursor: pointer;
-        user-select: none;
-      }
-      img {
-        cursor: pointer;
-        user-select: none;
-      }
-    }
+  gap: 2rem;
+}
+
+.note-block {
+  display: flex;
+  gap: 1.5rem;
+  background: var(--cardBackground);
+  border: 1px solid var(--borderColor);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0px 4px 8px var(--shadowColor);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow-x: scroll;
+  width: 100%;
+}
+
+.note-block:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 8px 16px var(--shadowHover);
+}
+
+.noteDiv1 {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 1rem;
+  width: 40rem;
+  height: 8.2rem;
+}
+
+.noteDiv1 p {
+  font-size: 1rem;
+  color: var(--textColor);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.noteDiv1 div {
+  padding: 1rem;
+  border: 1px solid var(--borderColor);
+  border-radius: 0.5rem;
+  background: var(--backgroundColor);
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  max-height: 6rem;
+}
+
+.noteDiv2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.noteDiv2 svg,
+.noteDiv2 img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.noteDiv2 svg:hover,
+.noteDiv2 img:hover {
+  transform: scale(1.2);
+  opacity: 0.8;
+}
+
+/* Dialog Styling */
+#editDialog {
+  background: var(--cardBackground);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0px 8px 16px var(--shadowHover);
+  margin: auto;
+  input {
+    all: unset;
+    border: 1px solid var(--borderColor);
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+    background: var(--backgroundColor);
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
   }
+}
+
+#dialogGap,
+#dialogButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#dialogButtons button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--primaryColor);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+#dialogButtons button:hover {
+  background: var(--secondaryColor);
+  transform: scale(1.05);
 }

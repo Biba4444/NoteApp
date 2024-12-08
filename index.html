@@ -9,25 +9,30 @@
   <body>
     <div id="mainContainer">
       <div class="leftContainer">
-        <section class="addSection">
-          <form>
-            <label for="noteInput">
-              <p>Input your Note here</p>
-              <input
-                type="text"
-                placeholder="Your Note"
-                required
-                id="noteInput"
-              />
-              <textarea
-                placeholder="Description"
-                required
-                id="noteDescription"
-              ></textarea>
-              <button type="submit" id="noteSubmit">submit</button>
-            </label>
-          </form>
-        </section>
+        <div class="miniLeftContainer">
+          <h1>NoteBook</h1>
+        </div>
+        <div class="inputNoteContainer">
+          <section class="addSection">
+            <form>
+              <label for="noteInput">
+                <p>Input your Note here</p>
+                <input
+                  type="text"
+                  placeholder="Your Note"
+                  required
+                  id="noteInput"
+                />
+                <textarea
+                  placeholder="Description"
+                  required
+                  id="noteDescription"
+                ></textarea>
+                <button type="submit" id="noteSubmit">submit</button>
+              </label>
+            </form>
+          </section>
+        </div>
       </div>
       <div class="notesList">
         <div id="rightContainer"></div>
