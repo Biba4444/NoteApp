@@ -229,6 +229,10 @@ let startIndex: number;
 
     const totalPages = Math.max(1, Math.ceil(newData.length / pageSize));
 
+    if (newData.length === 0) {
+      return; // Ничего не рендерим, если нет данных
+    }
+
     if (currentPage > totalPages) {
       currentPage = totalPages;
       renderNotes();

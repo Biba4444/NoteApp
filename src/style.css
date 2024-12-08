@@ -232,11 +232,21 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0px 8px 16px var(--shadowHover);
+  margin: auto;
+  input {
+    all: unset;
+    border: 1px solid var(--borderColor);
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+    background: var(--backgroundColor);
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+  }
 }
 
 #dialogGap,
 #dialogButtons {
   display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
