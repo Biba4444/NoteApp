@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NoteApp</title>
+    <script type="module" crossorigin src="/NoteApp/assets/index-Cv_bCy-b.js"></script>
+    <link rel="stylesheet" crossorigin href="/NoteApp/assets/index-DilbaPm9.css">
+  </head>
+  <body>
+    <div id="mainContainer">
+      <div class="leftContainer">
+        <div class="miniLeftContainer">
+          <h1>NoteBook</h1>
+        </div>
+        <div class="inputNoteContainer">
+          <section class="addSection">
+            <form>
+              <label for="noteInput">
+                <p>Input your Note here</p>
+                <input
+                  type="text"
+                  placeholder="Your Note"
+                  required
+                  id="noteInput"
+                />
+                <textarea
+                  placeholder="Description"
+                  required
+                  id="noteDescription"
+                ></textarea>
+                <button type="submit" id="noteSubmit">submit</button>
+              </label>
+            </form>
+          </section>
+        </div>
+      </div>
+      <div class="notesList">
+        <div id="rightContainer"></div>
+        <div id="pagination"></div>
+      </div>
+    </div>
+  </body>
+</html>
