@@ -36,6 +36,15 @@ const writeJSONFile = data => {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
 };
 
+const updateObjectInArray = (array, id, updatedFields) => {
+  return array.map(obj => {
+    if (obj.id === id) {
+      return { ...obj, ...updatedFields };
+    }
+    return obj;
+  });
+};
+
 app.get("/api/data", (req, res) => {
   const data = readJSONFile();
   res.json(data);
@@ -47,6 +56,20 @@ app.post("/api/data-add", (req, res) => {
   data.push(newData);
   writeJSONFile(data);
   res.status(201).json(newData);
+});
+
+app.post("/api/data-change", (req, res) => {
+  const changeData = req.body;
+  const { id, ...updatedFields } = changeData;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID is required" });
+  }
+  const data = readJSONFile();
+  const newData = updateObjectInArray(data, id, updatedFields);
+
+  writeJSONFile(newData);
+  res.status(200).json(newData);
 });
 
 app.delete("/api/data-delete", (req, res) => {
