@@ -35,6 +35,24 @@ const addData = async (postData: Note) => {
   }
 };
 
+const changeData = async (dataToChange: Note) => {
+  try {
+    const response = await fetch("http://localhost:3000/api/data-change", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToChange),
+    });
+    if (!response.ok) {
+      console.error(`Error: ${response.status} - ${response.statusText}`);
+      return;
+    }
+  } catch (error) {
+    console.error("An error occurred while posting data", error);
+  }
+};
+
 const delData = async (id: string) => {
   try {
     const response = await fetch("http://localhost:3000/api/data-delete", {
@@ -57,24 +75,8 @@ const delData = async (id: string) => {
   }
 };
 
-const dragStartFunc = () => {
-  rightContainer?.addEventListener("dragstart", (event: Event) => {
-    const dragEvent = event as DragEvent;
-
-    const target = event.target as HTMLElement;
-    if (target.classList.contains("note-block")) {
-      const noteId = target.getAttribute("data-id") || "";
-      dragEvent.dataTransfer?.setData("text/plain", noteId);
-      console.log("Started dragging note with ID:", noteId);
-    }
-  });
-};
-
-const initDrag = () => {
-  rightContainer?.addEventListener("dragover", (event: Event) => {
-    event.preventDefault();
-  });
-};
+let notesToDisplay: Note[];
+let startIndex: number;
 
 // Wrap all functions into one asyn
 (async () => {
@@ -82,7 +84,7 @@ const initDrag = () => {
   let newData = await fetchData();
   let dataToAdd;
 
-  const pageSize = 5;
+  const pageSize = 3;
 
   if (!newData) {
     console.log("Data is not found");
@@ -97,9 +99,9 @@ const initDrag = () => {
 
     rightContainer.innerHTML = "";
 
-    const startIndex = (currentPage - 1) * pageSize;
+    startIndex = (currentPage - 1) * pageSize;
     const endIndex = Math.min(startIndex + pageSize, newData.length);
-    const notesToDisplay = newData.slice(startIndex, endIndex);
+    notesToDisplay = newData.slice(startIndex, endIndex);
 
     notesToDisplay.map(note => {
       const block = document.createElement("div");
@@ -107,14 +109,15 @@ const initDrag = () => {
       block.classList.add("note-block");
       block.setAttribute("id", uniqueId);
       block.setAttribute("data-id", note.id);
-      block.setAttribute("draggable", "true");
 
       block.innerHTML = `
         <div class="noteDiv1">
-          <p>${note.title}</p>
-          <div>${note.description}</div>
+          <p class="pMainText">${note.title}</p>
+          <div class="divDescrText">${note.description}</div>
         </div>
         <div class="noteDiv2">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"
+        class="redactImage"/></svg>
           <img 
             width="20px" 
             height="20px" 
@@ -123,6 +126,23 @@ const initDrag = () => {
             class="noteImage"
           />
         </div>
+        <dialog id="editDialog">
+        <div id="dialogContainer">
+    <form method="dialog">
+        <div id="dialogGap">
+        <label for="editInput">Edit note:</label>
+        <input type="text" id="editInput" />
+        <input type="text" id="editDescription" />
+        <div>
+        <div id="dialogButtons">
+        <menu>
+        <button value="cancel">Decline</button>
+        <button value="confirm">Save</button>
+        </menu>
+        <div>
+        <div>
+    </form>
+</dialog>
       `;
 
       const noteImage = block.querySelector<HTMLImageElement>(".noteImage");
@@ -132,6 +152,62 @@ const initDrag = () => {
           await delData(noteId);
           newData = newData.filter(n => n.id !== note.id);
           renderNotes();
+        });
+      }
+      const redactImage =
+        block.querySelector<HTMLOrSVGImageElement>(".redactImage");
+
+      if (redactImage) {
+        redactImage.addEventListener("click", () => {
+          const noteId = note.id;
+
+          const dialog = block.querySelector<HTMLDialogElement>("#editDialog");
+          const input = block.querySelector<HTMLInputElement>("#editInput");
+          const descriptionInput =
+            block.querySelector<HTMLInputElement>("#editDescription");
+
+          if (!dialog || !input || !descriptionInput) {
+            console.error("Dialog or input elements not found.");
+            return;
+          }
+
+          input.value = note.title;
+          descriptionInput.value = note.description;
+
+          dialog.showModal();
+
+          dialog.addEventListener(
+            "close",
+            async () => {
+              if (dialog.returnValue === "confirm") {
+                const updatedTitle = input.value.trim();
+                const updatedDescription = descriptionInput.value.trim();
+
+                if (updatedTitle && updatedDescription) {
+                  note.title = updatedTitle;
+                  note.description = updatedDescription;
+
+                  await changeData({
+                    id: noteId,
+                    title: updatedTitle,
+                    description: updatedDescription,
+                  });
+
+                  const pMainText =
+                    block.querySelector<HTMLParagraphElement>(".pMainText");
+                  const divDescrText =
+                    block.querySelector<HTMLDivElement>(".divDescrText");
+
+                  if (pMainText) pMainText.textContent = updatedTitle;
+                  if (divDescrText)
+                    divDescrText.textContent = updatedDescription;
+                } else {
+                  console.log("Both fields must be filled.");
+                }
+              }
+            },
+            { once: true }
+          );
         });
       }
 
@@ -150,7 +226,18 @@ const initDrag = () => {
     }
 
     paginationContainer.innerHTML = "";
-    const totalPages = Math.ceil(newData.length / pageSize);
+
+    const totalPages = Math.max(1, Math.ceil(newData.length / pageSize));
+
+    if (newData.length === 0) {
+      return; // Ничего не рендерим, если нет данных
+    }
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+      renderNotes();
+      return;
+    }
 
     const prevButton = document.createElement("button");
     prevButton.textContent = "Previous";
@@ -158,14 +245,7 @@ const initDrag = () => {
     prevButton.addEventListener("click", () => {
       currentPage = Math.max(1, currentPage - 1);
       renderNotes();
-    });
-
-    const nextButton = document.createElement("button");
-    nextButton.textContent = "Next";
-    nextButton.disabled = currentPage === totalPages;
-    nextButton.addEventListener("click", () => {
-      currentPage = Math.min(totalPages, currentPage + 1);
-      renderNotes();
+      renderPagination();
     });
 
     paginationContainer.appendChild(prevButton);
@@ -174,13 +254,24 @@ const initDrag = () => {
       const pageButton = document.createElement("button");
       pageButton.textContent = i.toString();
       pageButton.disabled = i === currentPage;
+
       pageButton.addEventListener("click", () => {
         currentPage = i;
         renderNotes();
+        renderPagination();
       });
 
       paginationContainer.appendChild(pageButton);
     }
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Next";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener("click", () => {
+      currentPage = Math.min(totalPages, currentPage + 1);
+      renderNotes();
+      renderPagination();
+    });
 
     paginationContainer.appendChild(nextButton);
   };
@@ -218,6 +309,4 @@ const initDrag = () => {
   }
 
   renderNotes();
-  dragStartFunc();
-  initDrag();
 })();
