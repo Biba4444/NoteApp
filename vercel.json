@@ -12,7 +12,7 @@
   ],
   "routes": [
     {
-      "src": "/dist/assets/(.*).js",
+      "src": "dist/assets/(.*).js",
       "headers": {
         "Content-Type": "application/javascript"
       }
