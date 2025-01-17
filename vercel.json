@@ -2,17 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "json-api/server.js",
+      "src": "/json-api/server.js",
       "use": "@vercel/node"
     },
     {
-      "src": "dist/**/*",
+      "src": "/dist/**/*",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "dist/assets/(.*).js",
+      "src": "/dist/assets/(.*).js",
       "headers": {
         "Content-Type": "application/javascript"
       }
